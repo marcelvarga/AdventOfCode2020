@@ -14,6 +14,6 @@ int main(){
                 ok = 1;
                 cout<<"Product is "<<a[i] * a[j] * a[k]<<'\n';
             }
-        
+	fi.close();        
     return 0;
 }
