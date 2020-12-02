@@ -3,7 +3,7 @@
 using namespace std;
 ifstream fi("in.in");
 int main(){
-    int n=0, a[1001];;
+    int n=0, a[1001];
     while(fi>>a[n++]);
     n--;
     bool ok = 0;
