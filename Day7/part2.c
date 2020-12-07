@@ -6,9 +6,8 @@
 const int linemax = 300;
 typedef struct bag{
     char Name[30];
-    bool HasShinyGold;
     struct bag *ContainedBags[20];
-    int Quantity[20];
+    long long Quantity[20];
     int ContainedBagsNo;
 }bag;
 
@@ -51,7 +50,6 @@ void GetContainedBags(char *s, int index, bag *currentbag, bag bags[1000], int *
         if (!found){
         *n = *n +1;
         strcpy(bags[*n-1].Name, newbag);
-        bags[*n-1].HasShinyGold = 0;
         bags[*n-1].ContainedBagsNo = 0;
         
         bags[index].ContainedBags[bags[index].ContainedBagsNo] = &bags[*n-1];    
@@ -92,7 +90,6 @@ int read(FILE *in, bag bags[1000]){
     }
 
     strcpy(currentbag->Name, newbag);
-    currentbag->HasShinyGold = 0;
     currentbag->ContainedBagsNo = 0;
 
     char *p = strstr(line,"contain");
@@ -104,15 +101,12 @@ int read(FILE *in, bag bags[1000]){
     return n;
 
 }
-bool DFS(bag *CurrentBag){
-    if (CurrentBag -> HasShinyGold == 1) return 1;
-    if (CurrentBag -> ContainedBagsNo == 0) return 0;
-    bool ANS = 0;
+int DFS(bag *CurrentBag){
+    int ANS = 0;
+
     for (int i = 0; i < CurrentBag -> ContainedBagsNo; i++)
-        if (DFS(CurrentBag->ContainedBags[i])) ANS = 1;
-    
-    CurrentBag->HasShinyGold = ANS;
-    return ANS;
+        ANS += CurrentBag -> Quantity[i] * DFS(CurrentBag -> ContainedBags[i]);
+    return ANS + 1;
 }
 
 int main(){
@@ -123,19 +117,14 @@ int main(){
     int ShinyGoldIndex = -1;
     for (int i = 0; i < n; i++){
        if (!strcmp(bags[i].Name,"shiny gold")){
-           bags[i].HasShinyGold = 1;
            ShinyGoldIndex = i;
            i = n;
        }
     }
-    for(int i = 0; i < n; i++)
-        DFS(&bags[i]);
 
     int ANS = 0;
-    for(int i = 0; i < n; i++)
-        ANS += (bags[i].HasShinyGold);
-
-    printf("%d\n", ANS-1);
+    ANS = DFS(&bags[ShinyGoldIndex]);
+    printf("%d\n",ANS - 1);
 
     return 0;
 }
